@@ -1,0 +1,24 @@
+Q3. Write a Spark program to count the number of occurrences of each word in a given text file.
+
+Ans: import sys
+ 
+     from pyspark import SparkContext, SparkConf
+ 
+     if __name__ == "__main__":
+	
+	# create Spark context with necessary configuration
+
+	sc = SparkContext("local","PySpark Word Count Exmaple")
+	
+	# read data from text file and split each line into words and create a flatmap of words. words is of type PythonRDD.
+
+	words = sc.textFile("E:/workspace/spark/input.txt").flatMap(lambda line: line.split(" "))
+	
+	# count the occurrence of each word by map each word to a key:value pair of word:1, 1 being the number of occurrences.
+        #The result is then reduced by key, which is the word, and the values are added.
+
+	wordCounts = words.map(lambda word: (word, 1)).reduceByKey(lambda a,b:a +b)
+	
+	# save the counts to output
+
+	wordCounts.saveAsTextFile("E:/workspace/spark/output/")
